@@ -1,11 +1,11 @@
 package com.cg.creditcardpayment.exception;
 
-public class UserException extends Exception {
+public class LoginException extends Exception {
 
 
 	private static final long serialVersionUID = 1L;
 	
-	public UserException(String exp) {
+	public LoginException(String exp) {
 		super(exp);
 	}
 

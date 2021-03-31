@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="users")
-public class UserEntity {
+public class LoginEntity {
 	
 	@Id
 	@Column(name="user_id")
@@ -25,11 +25,11 @@ public class UserEntity {
 	private CustomerEntity user;
 	
 	
-	public UserEntity() {
+	public LoginEntity() {
 		/* Default Constructor*/
 	}
 
-	public UserEntity(String userId, String password, String role) {
+	public LoginEntity(String userId, String password, String role) {
 		super();
 		this.userId = userId;
 		this.password = password;
@@ -78,7 +78,7 @@ public class UserEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserEntity other = (UserEntity) obj;
+		LoginEntity other = (LoginEntity) obj;
 		if (password == null) {
 			if (other.password != null)
 				return false;

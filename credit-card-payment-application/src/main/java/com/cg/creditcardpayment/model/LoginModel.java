@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-public class UserModel {
+public class LoginModel {
 	
 	@NotNull(message="user id cannot be null")	
 	@NotBlank(message="user id cannot be blank")
@@ -23,11 +23,11 @@ public class UserModel {
 	
 	private String role;
 	
-	public UserModel() {
+	public LoginModel() {
 		/* Default Constructor*/
 	}
 
-	public UserModel(
+	public LoginModel(
 			@NotNull(message = "user id cannot be null") @NotBlank(message = "user id cannot be blank") @Pattern(regexp="^[A-Za-z][A-Za-z0-9]{3,20}$") String userId,
 			@NotNull(message = "password cannot be null") @NotBlank(message = "password cannot be blank") @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&()])(?=\\\\S+$).{8,30}$") String password,
 			String role) {
@@ -81,7 +81,7 @@ public class UserModel {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserModel other = (UserModel) obj;
+		LoginModel other = (LoginModel) obj;
 		if (password == null) {
 			if (other.password != null)
 				return false;

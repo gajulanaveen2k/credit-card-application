@@ -3,9 +3,9 @@ package com.cg.creditcardpayment.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.cg.creditcardpayment.entity.UserEntity;
+import com.cg.creditcardpayment.entity.LoginEntity;
 
 @Repository
-public interface IUserRepository extends JpaRepository<UserEntity, String>{
+public interface ILoginRepository extends JpaRepository<LoginEntity, String>{
 	
 }

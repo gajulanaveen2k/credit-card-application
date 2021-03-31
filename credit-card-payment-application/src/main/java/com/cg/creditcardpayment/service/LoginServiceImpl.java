@@ -6,39 +6,39 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cg.creditcardpayment.dao.IUserRepository;
-import com.cg.creditcardpayment.entity.UserEntity;
-import com.cg.creditcardpayment.exception.UserException;
+import com.cg.creditcardpayment.dao.ILoginRepository;
+import com.cg.creditcardpayment.entity.LoginEntity;
+import com.cg.creditcardpayment.exception.LoginException;
 import com.cg.creditcardpayment.model.ChangePassword;
 import com.cg.creditcardpayment.model.SignUp;
-import com.cg.creditcardpayment.model.UserModel;
+import com.cg.creditcardpayment.model.LoginModel;
 
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class LoginServiceImpl implements ILoginService {
 	
 	@Autowired
-	private IUserRepository userRepo;
+	private ILoginRepository userRepo;
 
 	@Autowired
 	private EMParse parser;
 	
-	public UserServiceImpl() {
+	public LoginServiceImpl() {
 		
 	}
 	
-	public UserServiceImpl(IUserRepository userRepo) {
+	public LoginServiceImpl(ILoginRepository userRepo) {
 		super();
 		this.userRepo = userRepo;
 		this.parser = new EMParse();
 	}
 
 	
-	public IUserRepository getUserRepo() {
+	public ILoginRepository getUserRepo() {
 		return userRepo;
 	}
 
-	public void setUserRepo(IUserRepository userRepo) {
+	public void setUserRepo(ILoginRepository userRepo) {
 		this.userRepo = userRepo;
 	}
 
@@ -51,16 +51,16 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public UserModel add(UserModel user) throws UserException {
+	public LoginModel add(LoginModel user) throws LoginException {
 		if(user !=null) {
 			if(userRepo.existsById(user.getUserId())) {
-				throw new UserException("User "+user.getUserId()+" is already Exists");
+				throw new LoginException("User "+user.getUserId()+" is already Exists");
 			}
 			if(!user.getUserId().matches("^[A-Za-z][A-Za-z0-9]{3,20}$")) {
-				throw new UserException("UserId should be non empty and minimum of length 4");
+				throw new LoginException("UserId should be non empty and minimum of length 4");
 			}
 			if(!user.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&()])(?=\\S+$).{8,}$")) {
-				throw new UserException("Password should contain upper case, Lower case, Special charecter, numbers and length minimum 8");
+				throw new LoginException("Password should contain upper case, Lower case, Special charecter, numbers and length minimum 8");
 			}
 			else {
 				user=parser.parse(userRepo.save(parser.parse(user)));
@@ -70,12 +70,12 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public UserModel save(UserModel user) throws UserException {
-		UserModel old=parser.parse(userRepo.findById(user.getUserId()).orElse(null));
+	public LoginModel save(LoginModel user) throws LoginException {
+		LoginModel old=parser.parse(userRepo.findById(user.getUserId()).orElse(null));
 		if(old == null) {
-			throw new UserException("No user with Id "+user.getUserId()+" is present");
+			throw new LoginException("No user with Id "+user.getUserId()+" is present");
 		}else if(!user.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&()])(?=\\S+$).{8,}$")) {
-			throw new UserException("Password should contain upper case, Lower case, Special charecter, numbers and length minimum 8");
+			throw new LoginException("Password should contain upper case, Lower case, Special charecter, numbers and length minimum 8");
 		}else {
 			user=parser.parse(userRepo.save(parser.parse(user)));
 		}
@@ -83,26 +83,26 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public List<UserModel> findAll() {
+	public List<LoginModel> findAll() {
 		return userRepo.findAll().stream().map(parser::parse).collect(Collectors.toList());
 	}
 
 	@Override
-	public void deleteById(String userId) throws UserException {
+	public void deleteById(String userId) throws LoginException {
 		if(userId==null) {
-			throw new UserException("User Id Cannot be Null");
+			throw new LoginException("User Id Cannot be Null");
 		}else if(!userRepo.existsById(userId)) {
-			throw new UserException("User with user Id "+userId+" Does not exists");
+			throw new LoginException("User with user Id "+userId+" Does not exists");
 		}
 		userRepo.deleteById(userId);
 	}
 
 	@Override
-	public UserModel findById(String userId) throws UserException {
+	public LoginModel findById(String userId) throws LoginException {
 		if(userId==null) {
-			throw new UserException("User Id Cannot be Null");
+			throw new LoginException("User Id Cannot be Null");
 		}else if(!userRepo.existsById(userId)) {
-			throw new UserException("User with user Id "+userId+" Does not exists");
+			throw new LoginException("User with user Id "+userId+" Does not exists");
 		}
 		return parser.parse(userRepo.findById(userId).orElse(null));
 	}
@@ -113,30 +113,30 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public boolean signIn(UserModel user) throws UserException {
+	public boolean signIn(LoginModel user) throws LoginException {
 		if(user==null) {
-			throw new UserException("SignIn details Cannot be Null");
+			throw new LoginException("SignIn details Cannot be Null");
 		}
-		UserEntity userDetails=userRepo.findById(user.getUserId()).orElse(null);
+		LoginEntity userDetails=userRepo.findById(user.getUserId()).orElse(null);
 		if(userDetails==null) {
-			throw new UserException("User Details doesnot Exists");
+			throw new LoginException("User Details doesnot Exists");
 		}
 		return userDetails.getPassword().equals(user.getPassword());
 	}
 
 	@Override
-	public boolean signOut(UserModel user) {
+	public boolean signOut(LoginModel user) {
 		return true;
 	}
 
 	@Override
-	public boolean changePassword(ChangePassword changePassword) throws UserException {
+	public boolean changePassword(ChangePassword changePassword) throws LoginException {
 		if(changePassword==null) {
-			throw new UserException("Change details should not be null");
+			throw new LoginException("Change details should not be null");
 		}
-		UserModel user=parser.parse(userRepo.findById(changePassword.getUserId()).orElse(null));
+		LoginModel user=parser.parse(userRepo.findById(changePassword.getUserId()).orElse(null));
 		if(user==null) {
-			throw new UserException("User details Does not exists");
+			throw new LoginException("User details Does not exists");
 		}
 		boolean isChanged=false;
 		if(user.getPassword().equals(changePassword.getCurrentPassword()) && changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
@@ -148,13 +148,13 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public UserModel signUp(SignUp signUp) throws UserException {
+	public LoginModel signUp(SignUp signUp) throws LoginException {
 		if(signUp==null) {
-			throw new UserException("SignUp details cannot be Null");
+			throw new LoginException("SignUp details cannot be Null");
 		}
-		UserModel user=parser.parse(userRepo.findById(signUp.getUserId()).orElse(null));
+		LoginModel user=parser.parse(userRepo.findById(signUp.getUserId()).orElse(null));
 		if(user==null) {
-			throw new UserException("SignUp details Does not Exists");
+			throw new LoginException("SignUp details Does not Exists");
 		}
 		if(user.getPassword().equals(signUp.getKey()) && signUp.getCreatePassword().equals(signUp.getConfirmPassword())) {
 			user.setPassword(signUp.getConfirmPassword());

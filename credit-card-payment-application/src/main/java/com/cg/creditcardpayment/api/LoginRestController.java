@@ -14,32 +14,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cg.creditcardpayment.exception.UserException;
+import com.cg.creditcardpayment.exception.LoginException;
 import com.cg.creditcardpayment.model.ChangePassword;
 import com.cg.creditcardpayment.model.SignUp;
-import com.cg.creditcardpayment.model.UserModel;
-import com.cg.creditcardpayment.service.IUserService;
+import com.cg.creditcardpayment.model.LoginModel;
+import com.cg.creditcardpayment.service.ILoginService;
 
 @RestController
 @RequestMapping("/users")
-public class UserRestController {
+public class LoginRestController {
 
 	@Autowired
-	private IUserService userService;
+	private ILoginService userService;
 	
 	
 	@GetMapping("/getAllUsers")
-	public ResponseEntity<List<UserModel>> findAll() {
+	public ResponseEntity<List<LoginModel>> findAll() {
 		return ResponseEntity.ok(userService.findAll());
 	}
 	
 	@GetMapping("/getUser/{userId}")
-	public ResponseEntity<UserModel> findById(@PathVariable("userId")String userId) throws UserException {
+	public ResponseEntity<LoginModel> findById(@PathVariable("userId")String userId) throws LoginException {
 		return new ResponseEntity<>(userService.findById(userId),HttpStatus.FOUND);
 	}
 		
 	@PostMapping("/signIn")
-	public ResponseEntity<String> signIn(@RequestBody UserModel user) throws UserException{
+	public ResponseEntity<String> signIn(@RequestBody LoginModel user) throws LoginException{
 		ResponseEntity<String> response=null;
 		if(userService.existsById(user.getUserId())) {
 			if(userService.signIn(user)) {
@@ -55,21 +55,21 @@ public class UserRestController {
 	
 	
 	@PostMapping("/addUser")
-	public ResponseEntity<String> add(@RequestBody UserModel user) throws UserException {
+	public ResponseEntity<String> add(@RequestBody LoginModel user) throws LoginException {
 		userService.add(user);
 		return new ResponseEntity<>("User is Added",HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/deleteUser/{userId}")
-	public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId) throws UserException {
+	public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId) throws LoginException {
 		userService.deleteById(userId);
 		return new ResponseEntity<>("User is Deleted",HttpStatus.OK);
 	}
 	
 	@PutMapping("/changePassword")
-	public ResponseEntity<String> updateUser(@RequestBody ChangePassword changePassword ) throws UserException {
+	public ResponseEntity<String> updateUser(@RequestBody ChangePassword changePassword ) throws LoginException {
 		ResponseEntity<String> response=null;
-		UserModel user=userService.findById(changePassword.getUserId());
+		LoginModel user=userService.findById(changePassword.getUserId());
 		if(user!=null) {
 			if(userService.changePassword(changePassword)) {
 				response=new ResponseEntity<>("Password Changed Succesfull!",HttpStatus.ACCEPTED);
@@ -83,9 +83,9 @@ public class UserRestController {
 	}
 	
 	@PutMapping("/signUp")
-	public ResponseEntity<UserModel> signUp(@RequestBody SignUp signUp ) throws UserException {
-		ResponseEntity<UserModel> response=null;
-		UserModel user=userService.findById(signUp.getUserId());
+	public ResponseEntity<LoginModel> signUp(@RequestBody SignUp signUp ) throws LoginException {
+		ResponseEntity<LoginModel> response=null;
+		LoginModel user=userService.findById(signUp.getUserId());
 		if(user!=null) {
 			user=userService.signUp(signUp);
 			response=new ResponseEntity<>(user,HttpStatus.ACCEPTED);
