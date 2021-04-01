@@ -201,8 +201,4 @@ public class TransactionEntity {
 				"TransactionEntity [transactionId=%s, status=%s, transactionDate=%s, transactionTime=%s, amount=%s, description=%s, creditCard=%s]",
 				transactionId, status, transactionDate, transactionTime, amount, description, creditCard);
 	}
-
-
-		
-	
 }
